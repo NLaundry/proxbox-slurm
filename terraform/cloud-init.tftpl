@@ -1,0 +1,56 @@
+#cloud-config
+hostname: ${hostname}
+fqdn: ${hostname}.example.com
+
+ssh_pwauth: true
+
+# User setup
+users:
+  # Ansible User (for automation)
+  - name: ansible
+    gecos: Ansible User
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    groups: users, admin, wheel, sudo
+    homedir: /home/ansible
+    shell: /bin/bash
+    lock_passwd: false
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+
+  # Slurm User (for job scheduling)
+  - name: slurm
+    gecos: Slurm Daemon User
+    groups: users
+    homedir: /var/lib/slurm
+    shell: /usr/sbin/nologin
+    lock_passwd: true
+
+  # MUNGE User (for authentication)
+  - name: munge
+    gecos: MUNGE Authentication User
+    groups: users
+    homedir: /var/lib/munge
+    shell: /usr/sbin/nologin
+    lock_passwd: true
+
+# Set Ansible user password (optional, typically SSH is preferred)
+chpasswd:
+  expire: false
+  users:
+    - {name: ansible, password: password, type: text}
+
+# Install essential packages
+packages:
+  - python3
+  - python3-pip
+  - curl
+  - vim
+
+# Run commands after instance setup
+runcmd:
+  - systemctl restart ssh
+  - echo "Hello, world!" > /etc/motd
+
+# Final message to indicate completion
+final_message: "Cloud-init has finished setting up this VM for Ansible control!"
+

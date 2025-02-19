@@ -1,0 +1,11 @@
+*.img
+token_data.txt
+*.swp
+.tfvars
+variables.tf
+devbox.lock
+*.lock.hcl
+*.tfstate
+*.tfstate.backup
+.venv/
+terraform/.terraform/
