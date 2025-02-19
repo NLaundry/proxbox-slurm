@@ -32,12 +32,12 @@ locals {
   all_nodes = merge(
     { for i in range(var.control_nodes_count) : "control-${i + 1}" => {
       hostname       = "slurm-control-node-${i + 1}"
-      cloudinit_file = "/var/lib/vz/snippets/cloud-init-control-${i + 1}.yml"
+      cloudinit_file = "/var/lib/vz/snippets/cloud-init-slurm-control-${i + 1}.yml"
       }
     },
     { for i in range(var.worker_nodes_count) : "worker-${i + 1}" => {
       hostname       = "slurm-worker-node-${i + 1}"
-      cloudinit_file = "/var/lib/vz/snippets/cloud-init-worker-${i + 1}.yml"
+      cloudinit_file = "/var/lib/vz/snippets/cloud-init-slurm-worker-${i + 1}.yml"
       }
     }
   )
