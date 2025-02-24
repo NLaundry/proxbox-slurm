@@ -1,0 +1,80 @@
+- name: Install required system packages
+  become: yes
+  package:
+    name:
+      - chrony
+      - ntpdate
+      - python3
+      - python3-pip
+      - vim
+    state: present
+
+- name: Ensure correct timezone is set
+  become: yes
+  timezone:
+    name: "{{ timezone }}"
+
+- name: Configure Chrony to use Canadian NTP pool
+  become: yes
+  lineinfile:
+    path: /etc/chrony/chrony.conf
+    regexp: "^server "
+    line: "server {{ ntp_server }} iburst"
+    state: present
+
+- name: Ensure Chrony service is enabled and running
+  become: yes
+  systemd:
+    name: chronyd
+    enabled: yes
+    state: started
+
+- name: Verify time synchronization
+  command: chronyc tracking
+  register: chronyc_output
+  changed_when: false
+
+- name: Display Chrony sync status
+  debug:
+    msg: "{{ chronyc_output.stdout_lines }}"
+
+- name: Ensure Slurm group exists
+  become: yes
+  group:
+    name: "{{ slurm_group }}"
+    state: present
+
+- name: Ensure Slurm user exists
+  become: yes
+  user:
+    name: "{{ slurm_user }}"
+    group: "{{ slurm_group }}"
+    home: "/home/{{ slurm_user }}"
+    shell: "/bin/bash"
+    state: present
+
+
+- name: Add controller node to /etc/hosts
+  become: yes
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ controller_ip }} {{ controller_hostname }}"
+    state: present
+
+- name: Add worker node to /etc/hosts
+  become: yes
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ worker_ip }} {{ worker_hostname }}"
+    state: present
+
+- name: Verify /etc/hosts entries
+  become: yes
+  ansible.builtin.command: cat /etc/hosts
+  register: hosts_file
+  changed_when: false
+
+- name: Display /etc/hosts entries
+  debug:
+    msg: "{{ hosts_file.stdout_lines }}"
+

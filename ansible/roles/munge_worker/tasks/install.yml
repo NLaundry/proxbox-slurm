@@ -1,0 +1,17 @@
+- name: Install MUNGE and dependencies on worker nodes
+  become: yes
+  package:
+    name:
+      - munge
+      - libmunge-dev
+    state: present
+
+- name: Ensure MUNGE directory exists
+  become: yes
+  file:
+    path: /etc/munge
+    state: directory
+    owner: munge
+    group: munge
+    mode: '0700'
+

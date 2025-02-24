@@ -1,0 +1,14 @@
+- name: Generate MUNGE key as the munge user
+  become: yes
+  command: "sudo -u munge /usr/sbin/mungekey --verbose"
+  args:
+    creates: /etc/munge/munge.key
+
+- name: Set ownership and permissions for MUNGE key
+  become: yes
+  file:
+    path: /etc/munge/munge.key
+    owner: munge
+    group: munge
+    mode: '0600'
+

@@ -1,0 +1,7 @@
+- name: Ensure munged service is enabled and running
+  become: yes
+  systemd:
+    name: munge.service
+    enabled: yes
+    state: started
+

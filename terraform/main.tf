@@ -7,13 +7,13 @@ variable "worker_nodes_count" {
 }
 
 variable "base_control_ip" {
-  default = "192.168.200.101"
-  # default = "10.0.1.101"
+  default = "192.168.200.201"
+  # default = "10.0.1.201"
 }
 
 variable "base_worker_ip" {
-  default = "192.168.201.101"
-  # default = "10.0.2.101"
+  default = "192.168.201.201"
+  # default = "10.0.2.201"
 }
 
 variable "inventory_path" {
@@ -87,7 +87,7 @@ resource "proxmox_vm_qemu" "control_nodes" {
 
   # citype = nocloud # this can't be set in terraform, BUT it absolutely has to on the VM template or cicustom doesn't work at all!
   cicustom   = "user=local:snippets/cloud-init-slurm-control-${count.index + 1}.yml"
-  ipconfig0  = "ip=192.168.200.${count.index + 101}/16,gw=192.168.1.1"
+  ipconfig0  = "ip=192.168.200.${count.index + 201}/16,gw=192.168.1.1"
   nameserver = "1.1.1.1 8.8.8.8"
 
   disks {
@@ -138,15 +138,15 @@ resource "proxmox_vm_qemu" "worker_nodes" {
 
   agent   = 1
   os_type = "cloud-init"
-  cores   = 2 # Workers have 1 core
+  cores   = 4 # Workers have 1 core
   sockets = 1
-  memory  = 4096
+  memory  = 8192
   scsihw  = "virtio-scsi-pci"
   boot    = "order=scsi0"
 
   # Cloud-init configuration
   cicustom   = "user=local:snippets/cloud-init-slurm-worker-${count.index + 1}.yml"
-  ipconfig0  = "ip=192.168.201.${count.index + 101}/16,gw=192.168.1.1"
+  ipconfig0  = "ip=192.168.201.${count.index + 201}/16,gw=192.168.1.1"
   nameserver = "1.1.1.1 8.8.8.8"
 
   disks {
@@ -183,11 +183,11 @@ resource "proxmox_vm_qemu" "worker_nodes" {
 }
 
 variable "base_control_ip_octet" {
-  default = 101 # Only define the last octet
+  default = 201 # Only define the last octet
 }
 
 variable "base_worker_ip_octet" {
-  default = 101 # Only define the last octet
+  default = 201 # Only define the last octet
 }
 resource "null_resource" "inventory" {
   depends_on = [
@@ -203,8 +203,8 @@ resource "null_resource" "inventory" {
       /bin/bash -c '
 
       # Secondary control nodes (all other control nodes)
-      echo "[secondary_control]" >> ${var.inventory_path}/inventory.ini
-      if [ ${var.control_nodes_count} -gt 1 ]; then
+      echo "[control]" >> ${var.inventory_path}/inventory.ini
+      if [ ${var.control_nodes_count} -gt 0 ]; then
         for ((i = ${var.base_control_ip_octet}; i < $((${var.base_control_ip_octet} + ${var.control_nodes_count})); i++)); do
           echo "192.168.200.$i" >> ${var.inventory_path}/inventory.ini
         done
@@ -213,7 +213,7 @@ resource "null_resource" "inventory" {
 
 
       # Worker nodes
-      echo "[worker_nodes]" >> ${var.inventory_path}/inventory.ini
+      echo "[worker]" >> ${var.inventory_path}/inventory.ini
       if [ ${var.worker_nodes_count} -gt 0 ]; then
         for ((i = ${var.base_worker_ip_octet}; i < $((${var.base_worker_ip_octet} + ${var.worker_nodes_count})); i++)); do
           echo "192.168.201.$i" >> ${var.inventory_path}/inventory.ini

@@ -1,0 +1,6 @@
+- name: Common Setup for Slurm Cluster
+  hosts: all
+  become: yes
+  roles:
+    - common
+

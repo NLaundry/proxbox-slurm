@@ -1,0 +1,43 @@
+# slurm.conf generated from Ansible template
+
+# Cluster Settings
+ClusterName={{ cluster_name }}
+SlurmctldHost={{ control_node }}
+SlurmUser={{ slurm_user }}
+AuthType={{ auth_type }}
+
+# Networking and Ports
+SlurmctldPort={{ slurmctld_port }}
+SlurmdPort={{ slurmd_port }}
+
+# File Locations
+StateSaveLocation={{ slurm_state_dir }}
+SlurmdSpoolDir={{ slurm_spool_dir }}
+SlurmctldPidFile={{ slurmctld_pid_file }}
+SlurmdPidFile={{ slurmd_pid_file }}
+
+# Logging
+SlurmctldLogFile={{ slurmctld_log_file }}
+SlurmdLogFile={{ slurmd_log_file }}
+JobCompType={{ job_comp_type }}
+JobCompLoc={{ slurm_job_log_file }}
+
+# Job and Node Management
+ProctrackType=proctrack/cgroup
+TaskPlugin=task/affinity,task/cgroup
+MinJobAge={{ min_job_age }}
+ReturnToService=1
+
+# Scheduling
+SchedulerType={{ scheduler_type }}
+SelectType={{ select_type }}
+
+# Timeouts
+SlurmctldTimeout={{ slurmctld_timeout }}
+SlurmdTimeout={{ slurmd_timeout }}
+KillWait=30
+
+# Node and Partition Configuration
+NodeName={{ node_name }} CPUs={{ node_cpus }} State=UNKNOWN
+PartitionName={{ partition_name }} Nodes={{ partition_nodes }} Default={{ partition_default }} MaxTime={{ partition_max_time }} State=UP
+

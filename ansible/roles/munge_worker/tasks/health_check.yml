@@ -1,0 +1,8 @@
+- name: Verify MUNGE setup on worker nodes
+  ansible.builtin.shell: munge -n | unmunge
+  register: munge_test
+
+- name: Display MUNGE health check result
+  debug:
+    msg: "{{ munge_test.stdout_lines }}"
+

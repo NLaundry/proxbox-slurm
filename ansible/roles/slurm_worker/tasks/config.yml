@@ -1,0 +1,40 @@
+- name: Ensure Slurm directories exist with correct permissions
+  become: yes
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ slurm_user }}"
+    group: "{{ slurm_group }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - { path: "{{ slurm_config_dir }}", mode: '0755' }
+    - { path: "{{ slurm_log_dir }}", mode: '0755' }
+    - { path: "{{ slurm_pid_dir }}", mode: '0755' }
+    - { path: "{{ slurm_spool_dir }}", mode: '0700' }
+    - { path: "{{ slurm_state_dir }}", mode: '0700' }
+  tags: slurm
+
+- name: Ensure Slurm log and PID files exist with correct ownership
+  become: yes
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: touch
+    owner: "{{ slurm_user }}"
+    group: "{{ slurm_group }}"
+    mode: '0644'
+  loop:
+    - "{{ slurmd_log_file }}"
+    - "{{ slurm_job_log_file }}"
+    - "{{ slurmd_pid_file }}"
+  tags: slurm
+
+- name: generate slurm.conf from jinja2 template
+  become: yes
+  ansible.builtin.template:
+    src: ../../templates/slurm.conf.j2
+    dest: "{{ slurm_conf_file }}"
+    owner: "{{ slurm_user }}"
+    group: "{{ slurm_group }}"
+    mode: '0644'
+  tags: slurm
+

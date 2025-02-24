@@ -1,0 +1,12 @@
+- name: SLURM setup - Control Node
+  hosts: control
+  become: no
+  roles:
+    - slurm_controller
+
+- name: SLURM setup - Worker Nodes
+  hosts: worker
+  become: no
+  roles:
+    - slurm_worker
+

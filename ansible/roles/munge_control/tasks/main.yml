@@ -1,0 +1,12 @@
+- name: Install MUNGE on control node
+  ansible.builtin.include_tasks: install.yml
+
+- name: Generate and secure MUNGE key
+  ansible.builtin.include_tasks: key_gen.yml
+
+- name: Fetch MUNGE key to Ansible controller
+  ansible.builtin.include_tasks: fetch_key.yml
+
+- name: Ensure MUNGE service is running
+  ansible.builtin.include_tasks: service.yml
+

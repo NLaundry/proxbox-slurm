@@ -1,0 +1,12 @@
+- name: MUNGE Setup - Control Node
+  hosts: control
+  become: no
+  roles:
+    - munge_control
+
+- name: MUNGE Setup - Worker Nodes
+  hosts: worker
+  become: no
+  roles:
+    - munge_worker
+

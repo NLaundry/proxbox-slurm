@@ -1,0 +1,14 @@
+- name: Enable and start slurmctld service
+  become: yes
+  systemd:
+    name: slurmctld
+    enabled: yes
+    state: started
+
+- name: Enable and start slurmrestd service (REST API)
+  become: yes
+  systemd:
+    name: slurmrestd
+    enabled: yes
+    state: started
+

@@ -1,0 +1,8 @@
+- name: Install Slurm packages on control node
+  become: yes
+  package:
+    name:
+      - slurm-wlm
+      - slurm-client
+      - slurmrestd
+    state: present

@@ -1,0 +1,6 @@
+- name: Install Slurm packages on worker nodes
+  become: yes
+  package:
+    name:
+      - slurmd
+    state: present

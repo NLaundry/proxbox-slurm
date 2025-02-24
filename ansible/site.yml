@@ -1,0 +1,4 @@
+ - import_playbook: playbooks/01_common.yml
+ - import_playbook: playbooks/02_munge.yml
+ - import_playbook: playbooks/03_slurm.yml
+# - import_playbook: playbooks/04_healthcheck.yml

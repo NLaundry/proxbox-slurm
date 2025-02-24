@@ -1,0 +1,7 @@
+- name: Fetch MUNGE key from control node to Ansible controller
+  become: yes
+  fetch:
+    src: /etc/munge/munge.key
+    dest: /tmp/munge.key
+    flat: yes
+

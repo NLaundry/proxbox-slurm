@@ -1,0 +1,12 @@
+- name: Install MUNGE on worker nodes
+  ansible.builtin.include_tasks: install.yml
+
+- name: Copy MUNGE key from controller to workers
+  ansible.builtin.include_tasks: key_setup.yml
+
+- name: Ensure MUNGE service is running
+  ansible.builtin.include_tasks: service.yml
+
+- name: Verify MUNGE health across nodes
+  ansible.builtin.include_tasks: health_check.yml
+

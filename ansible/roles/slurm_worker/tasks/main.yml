@@ -1,0 +1,9 @@
+- name: Install Slurm packages on worker nodes
+  ansible.builtin.include_tasks: install.yml
+
+- name: Copy slurm.conf from control node
+  ansible.builtin.include_tasks: config.yml
+
+- name: Enable and start slurmd service
+  ansible.builtin.include_tasks: service.yml
+
